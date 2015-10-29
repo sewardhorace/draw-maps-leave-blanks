@@ -66,6 +66,8 @@ function CanvasState(canvas) {
   this.dragoffx = 0; // See mousedown and mousemove events for explanation
   this.dragoffy = 0;
 
+
+
   // **** Then events! ****
 
   // This is an example of a closure!
@@ -120,6 +122,10 @@ function CanvasState(canvas) {
   // double click for making new shapes
   canvas.addEventListener('dblclick', function(e) {
     var mouse = myState.getMouse(e);
+
+    //TODO - popup menu with options for adding objects to canvas
+
+
     myState.addShape(new Shape(mouse.x - 10, mouse.y - 10, 20, 20, 'rgba(0,255,0,.6)'));
   }, true);
 
@@ -213,8 +219,67 @@ function init() {
   // Lets make some partially transparent
   s.addShape(new Shape(80,150,60,30, 'rgba(127, 255, 212, .5)'));
   s.addShape(new Shape(125,80,30,80, 'rgba(245, 222, 179, .7)'));
+  console.log(s.shapes);
 }
 
+//options window for new shapes
+
+/*
+double-click on the canvas
+->div pops up with options
+  options:
+    steadings:
+      custom:
+        prosperity: (dirt, poor, moderate, wealthy, rich)
+        population: (exodus, shrinking, steady, growing, booming)
+        defenses: (none, militia, watch, guard, garrison, battalion, legion)
+        other: (safe, religion, exotic, resource, need, oath, trade, market, enmity, history, arcane, divine, guild, personage, dwarven, elven, craft, lawless, blight, power)
+        random names???
+
+      defaults -
+        village
+        town
+        keep
+        city
+
+    fronts:
+      variety of symbolic representations of fronts (burning village, refugees, tower, gnarled tree, army, cave, etc.)
+
+    text:
+      heading/title
+      subheading/content
+      
+select an option
+->additional options/shape is added to the canvas
 
 
-// Now go make something amazing!
+double-click on an existing object
+->div pops up with options
+  options:
+    edit:
+      steading options:
+        growth
+        collapse
+        want
+        trade
+        capture
+        profit
+        surplus
+        aid
+        embattled
+        opportunity
+        clash
+
+      text/names
+
+    delete
+
+GUI at the bottom??
+  ability to cycle through objects
+  drawing tools (color and brush size select - drawn underneath the map objects)
+
+*/
+
+var popup = document.createElement("div");
+popup.setAttribute('id', 'map-popup');
+popup.setAttribute('style', 'width:50; height:50; display:none;');
