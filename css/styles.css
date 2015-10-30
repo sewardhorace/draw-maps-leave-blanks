@@ -3,9 +3,10 @@ body{
 }
 
 #canvas-container {
+  /*needs to match dimensions of child canvas*/
   position: relative;
   width:500px;
-  height:300px;
+  height:500px;
   margin: auto;
 }
 canvas{
@@ -50,6 +51,9 @@ canvas{
 }
 .nav-item:hover{
   cursor: pointer;
+  border-top: 1px solid #bdbbbb;
+  background-color: #8c8c8c;
+  border-bottom: 1px solid #706d6d;
 }
 .nav-left{
   float: left;
@@ -76,6 +80,7 @@ canvas{
   background-color: white;
   list-style-type: none;
   font-size: 14px;
+  font-weight: bold;
 }
 .popup-item:first-child{
   margin:0;
