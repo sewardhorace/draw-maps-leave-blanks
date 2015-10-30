@@ -1,23 +1,30 @@
 body{
   background-color: rgb(152, 198, 233);
 }
-canvas{
-  background-color: white;
-  display: block;
+
+#canvas-container {
+  position: relative;
+  width:500px;
+  height:300px;
   margin: auto;
 }
-
-.hidden{
-  display: none;
+canvas{
+  background-color: white;
+  position: absolute;
+  z-index: 1;
 }
-
 #popup {
+  position:absolute;
+  z-index: 2;
   background-color: #303030;
   max-height:200px;
   width: 150px;
   border-radius: 4px;
   padding-bottom:4px;
   font-family: sans-serif;
+}
+.hidden{
+  display: none;
 }
 .popup-nav{
   height: 20px;

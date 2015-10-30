@@ -1,27 +1,36 @@
 function Popup(){
-  // this.popupElement = document.createElement('div'); //WTF
 
   var self = this;
+  this.onAddCallback;
 
   this.hide = function(){
     self.popupElement.className = "hidden";
+    self.popupElement.setAttribute('style', 'top:0;left:0;');
   }
-  this.show = function(){
+  this.show = function(x, y){
     self.popupElement.className = "";
+    console.log('show at '+x+','+y);
+    self.popupElement.setAttribute('style', 'top:'+y+'px;left:'+x+'px;');
+  }
+
+  this.selectObjectOptions = function(x, y, callback){
+    self.onAddCallback = callback;
+    self.show(x, y);
   }
 
   this.addButtonClicked = function(e) {
     console.log("add button clicked");
     var shape = {
       name: self.nameInput.value,
-      height: self.heightInput.value,
-      width: self.widthInput.value
+      height: parseInt(self.heightInput.value) || 20,
+      width: parseInt(self.widthInput.value) || 20,
     }
     self.nameInput.value = "";
     self.heightInput.value = "";
     self.widthInput.value = "";
-    console.log(shape);
+
     self.hide();
+    self.onAddCallback(shape);
   }
   this.cancelButtonClicked = function(e) {
     console.log("cancelled");
@@ -31,7 +40,7 @@ function Popup(){
     //construct and style the popup element
     var popup = document.createElement("div");
     popup.setAttribute('id', 'popup');
-    // popup.setAttribute('class', 'hidden');
+    popup.setAttribute('class', 'hidden');
 
     var nav = document.createElement("div");
     nav.setAttribute('class', 'popup-nav');
@@ -78,7 +87,7 @@ function Popup(){
     var input1 = document.createElement("input");
     input1.setAttribute('type', 'text');
     input1.setAttribute('name', 'height');
-    input1.setAttribute('placeholder', 'default 10');
+    input1.setAttribute('placeholder', 'default 20');
     self.heightInput = input1;
     option1.appendChild(document.createTextNode("Height:"));
     option1.appendChild(input1);
@@ -87,7 +96,7 @@ function Popup(){
     var input2 = document.createElement("input");
     input2.setAttribute('type', 'text');
     input2.setAttribute('name', 'width');
-    input2.setAttribute('placeholder', 'default 10');
+    input2.setAttribute('placeholder', 'default 20');
     self.widthInput = input2;
     option2.appendChild(document.createTextNode("Width:"));
     option2.appendChild(input2);
@@ -117,7 +126,7 @@ function Popup(){
     self.popupElement = popup;
 
     if (!document.getElementById("popup")) {
-      document.body.appendChild(self.popupElement);
+      document.getElementById("canvas-container").appendChild(self.popupElement);
     }
   }
   init();

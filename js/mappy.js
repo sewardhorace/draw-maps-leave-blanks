@@ -37,6 +37,9 @@ Shape.prototype.contains = function(mx, my) {
 function CanvasState(canvas) {
   // **** First some setup! ****
 
+  //my stuff
+  this.popup = new Popup();
+
   this.canvas = canvas;
   this.width = canvas.width;
   this.height = canvas.height;
@@ -75,59 +78,63 @@ function CanvasState(canvas) {
   // and when the events are fired on the canvas the variable "this" is going to mean the canvas!
   // Since we still want to use this particular CanvasState in the events we have to save a reference to it.
   // This is our reference!
-  var myState = this;
+  var self = this;
 
   //fixes a problem where double clicking causes text to get selected on the canvas
   canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
   // Up, down, and move are for dragging
   canvas.addEventListener('mousedown', function(e) {
-    var mouse = myState.getMouse(e);
+    var mouse = self.getMouse(e);
     var mx = mouse.x;
     var my = mouse.y;
-    var shapes = myState.shapes;
+    var shapes = self.shapes;
     var l = shapes.length;
     for (var i = l-1; i >= 0; i--) {
       if (shapes[i].contains(mx, my)) {
         var mySel = shapes[i];
         // Keep track of where in the object we clicked
         // so we can move it smoothly (see mousemove)
-        myState.dragoffx = mx - mySel.x;
-        myState.dragoffy = my - mySel.y;
-        myState.dragging = true;
-        myState.selection = mySel;
-        myState.valid = false;
+        self.dragoffx = mx - mySel.x;
+        self.dragoffy = my - mySel.y;
+        self.dragging = true;
+        self.selection = mySel;
+        self.valid = false;
         return;
       }
     }
     // havent returned means we have failed to select anything.
     // If there was an object selected, we deselect it
-    if (myState.selection) {
-      myState.selection = null;
-      myState.valid = false; // Need to clear the old selection border
+    if (self.selection) {
+      self.selection = null;
+      self.valid = false; // Need to clear the old selection border
     }
   }, true);
   canvas.addEventListener('mousemove', function(e) {
-    if (myState.dragging){
-      var mouse = myState.getMouse(e);
+    if (self.dragging){
+      var mouse = self.getMouse(e);
       // We don't want to drag the object by its top-left corner, we want to drag it
       // from where we clicked. Thats why we saved the offset and use it here
-      myState.selection.x = mouse.x - myState.dragoffx;
-      myState.selection.y = mouse.y - myState.dragoffy;
-      myState.valid = false; // Something's dragging so we must redraw
+      self.selection.x = mouse.x - self.dragoffx;
+      self.selection.y = mouse.y - self.dragoffy;
+      self.valid = false; // Something's dragging so we must redraw
     }
   }, true);
   canvas.addEventListener('mouseup', function(e) {
-    myState.dragging = false;
+    self.dragging = false;
   }, true);
   // double click for making new shapes
   canvas.addEventListener('dblclick', function(e) {
-    var mouse = myState.getMouse(e);
+    var mouse = self.getMouse(e);
 
-    //TODO - popup menu with options for adding objects to canvas
+    //popup menu with options for adding objects to canvas
+    // self.popup.show(function(shape) {
+    //   self.addShape(new Shape(mouse.x - 10, mouse.y - 10, shape.width, shape.height, 'rgba(0,255,0,.6)'));
+    // });
 
-    $('#popup').removeClass("hidden");
+    self.popup.selectObjectOptions(mouse.x, mouse.y, function(shape) {
+      self.addShape(new Shape(mouse.x - 10, mouse.y - 10, shape.width, shape.height, 'rgba(0,255,0,.6)'));
+    });
 
-    myState.addShape(new Shape(mouse.x - 10, mouse.y - 10, 20, 20, 'rgba(0,255,0,.6)'));
   }, true);
 
   // **** Options! ****
@@ -135,7 +142,7 @@ function CanvasState(canvas) {
   this.selectionColor = '#CC0000';
   this.selectionWidth = 2;
   this.interval = 30;
-  setInterval(function() { myState.draw(); }, myState.interval);
+  setInterval(function() { self.draw(); }, self.interval);
 }
 
 CanvasState.prototype.addShape = function(shape) {
