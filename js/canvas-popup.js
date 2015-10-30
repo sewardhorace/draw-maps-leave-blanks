@@ -9,7 +9,6 @@ function Popup(){
   }
   this.show = function(x, y){
     self.popupElement.className = "";
-    console.log('show at '+x+','+y);
     self.popupElement.setAttribute('style', 'top:'+y+'px;left:'+x+'px;');
   }
 
@@ -19,9 +18,8 @@ function Popup(){
   }
 
   this.addButtonClicked = function(e) {
-    console.log("add button clicked");
     var shape = {
-      name: self.nameInput.value,
+      color: self.nameInput.value,
       height: parseInt(self.heightInput.value) || 20,
       width: parseInt(self.widthInput.value) || 20,
     }
@@ -33,7 +31,6 @@ function Popup(){
     self.onAddCallback(shape);
   }
   this.cancelButtonClicked = function(e) {
-    console.log("cancelled");
     self.hide();
   }
   function init() {
@@ -105,9 +102,9 @@ function Popup(){
     var input3 = document.createElement("input");
     input3.setAttribute('type', 'text');
     input3.setAttribute('name', 'name');
-    input3.setAttribute('placeholder', '(optional)');
+    input3.setAttribute('placeholder', 'default gray');
     self.nameInput = input3;
-    option3.appendChild(document.createTextNode("Name:"));
+    option3.appendChild(document.createTextNode("Color:"));
     option3.appendChild(input3);
 
     var options = [

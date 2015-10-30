@@ -127,14 +127,9 @@ function CanvasState(canvas) {
     var mouse = self.getMouse(e);
 
     //popup menu with options for adding objects to canvas
-    // self.popup.show(function(shape) {
-    //   self.addShape(new Shape(mouse.x - 10, mouse.y - 10, shape.width, shape.height, 'rgba(0,255,0,.6)'));
-    // });
-
     self.popup.selectObjectOptions(mouse.x, mouse.y, function(shape) {
-      self.addShape(new Shape(mouse.x - 10, mouse.y - 10, shape.width, shape.height, 'rgba(0,255,0,.6)'));
+      self.addShape(new Shape(mouse.x - 10, mouse.y - 10, shape.width, shape.height, shape.color));
     });
-
   }, true);
 
   // **** Options! ****
