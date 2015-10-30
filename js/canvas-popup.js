@@ -10,11 +10,18 @@ function Popup(){
   this.show = function(x, y){
     self.popupElement.className = "";
     self.popupElement.setAttribute('style', 'top:'+y+'px;left:'+x+'px;');
+    self.heightInput.focus();
   }
 
   this.selectObjectOptions = function(x, y, callback){
     self.onAddCallback = callback;
     self.show(x, y);
+  }
+
+  this.keyPressed = function(e){
+    if(e.keyCode=='13'){
+      self.addButtonClicked();
+    }
   }
 
   this.addButtonClicked = function(e) {
@@ -119,6 +126,9 @@ function Popup(){
     }
     body.appendChild(list);
     popup.appendChild(body);
+
+    //support for submitting with the enter key
+    popup.onkeydown = self.keyPressed;
 
     self.popupElement = popup;
 
