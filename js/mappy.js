@@ -102,12 +102,6 @@ function CanvasState(canvas) {
         return;
       }
     }
-    // havent returned means we have failed to select anything.
-    // If there was an object selected, we deselect it
-    if (self.selection) {
-      self.selection = null;
-      self.valid = false; // Need to clear the old selection border
-    }
   }, true);
   canvas.addEventListener('mousemove', function(e) {
     if (self.dragging){
@@ -121,7 +115,10 @@ function CanvasState(canvas) {
   }, true);
   canvas.addEventListener('mouseup', function(e) {
     self.dragging = false;
+    self.selection = null;
+    self.valid = false;
   }, true);
+
   // double click for making new shapes
   canvas.addEventListener('dblclick', function(e) {
     var mouse = self.getMouse(e);
@@ -134,8 +131,8 @@ function CanvasState(canvas) {
 
   // **** Options! ****
 
-  this.selectionColor = '#CC0000';
-  this.selectionWidth = 2;
+  this.selectionColor = 'blue';
+  this.selectionWidth = 1;
   this.interval = 30;
   setInterval(function() { self.draw(); }, self.interval);
 }
@@ -211,8 +208,6 @@ CanvasState.prototype.getMouse = function(e) {
   return {x: mx, y: my};
 }
 
-// If you dont want to use <body onLoad='init()'>
-// You could uncomment this init() reference and place the script reference inside the body tag
 init();
 
 function init() {
