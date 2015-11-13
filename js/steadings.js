@@ -4,6 +4,7 @@ function MapObject(name, x, y, img) {
   this.x = x || 0;
   this.y = y || 0;
   this.img = img;
+  
 }
 
 // Draws this shape to a given context
@@ -22,6 +23,9 @@ MapObject.prototype.contains = function(mx, my) {
 
 var image = new Image();
 image.src = 'images/rabbitredthumb.png';
+
+var icons = new Image();
+icons.src = "images/cowboyspritestrip.png";
 
 // image.onload = function(){
 //   context.drawImage(base_image, 100, 100);
