@@ -3,6 +3,10 @@ function Popup(){
   var self = this;
   this.onAddCallback;
 
+  var icons = new Image();
+  icons.src = "images/cowboyspritestrip.png";
+
+
   this.hide = function(){
     self.popupElement.className = "hidden";
     self.popupElement.setAttribute('style', 'top:0;left:0;');
@@ -10,7 +14,7 @@ function Popup(){
   this.show = function(x, y){
     self.popupElement.className = "";
     self.popupElement.setAttribute('style', 'top:'+y+'px;left:'+x+'px;');
-    self.heightInput.focus();
+    self.objectTitleInput.focus();
   }
 
   this.selectObjectOptions = function(x, y, callback){
@@ -39,6 +43,7 @@ function Popup(){
   }
   this.cancelButtonClicked = function(e) {
     self.hide();
+    self.objectTitleInput.value = "";
   }
   function init() {
     //construct and style the popup element
@@ -50,18 +55,16 @@ function Popup(){
     nav.setAttribute('class', 'popup-nav');
 
     var navItem1 = document.createElement("input");
-    navItem1.setAttribute('id', 'object-title');
     navItem1.setAttribute('class', 'nav-title nav-left');
     navItem1.setAttribute('placeholder', 'Title (optional)');
+    self.objectTitleInput = navItem1;
 
     var navItem2 = document.createElement("div");
-    navItem2.setAttribute('id', 'cancel-btn');
     navItem2.onclick = self.cancelButtonClicked;
     navItem2.setAttribute('class', 'nav-item nav-right');
     navItem2.appendChild(document.createTextNode("x"));
 
     var navItem3 = document.createElement("div");
-    navItem3.setAttribute('id', 'add-btn');
     navItem3.onclick = self.addButtonClicked;
     navItem3.setAttribute('class', 'nav-item nav-right');
     navItem3.appendChild(document.createTextNode("+"));
