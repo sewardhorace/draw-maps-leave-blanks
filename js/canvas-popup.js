@@ -49,34 +49,30 @@ function Popup(){
     var nav = document.createElement("div");
     nav.setAttribute('class', 'popup-nav');
 
-    var navItem1 = document.createElement("div");
-    navItem1.setAttribute('id', 'back-btn');
-    navItem1.appendChild(document.createTextNode("<"));
+    var navItem1 = document.createElement("input");
+    navItem1.setAttribute('id', 'object-title');
+    navItem1.setAttribute('class', 'nav-title nav-left');
+    navItem1.setAttribute('placeholder', 'Title (optional)');
 
     var navItem2 = document.createElement("div");
-    navItem2.setAttribute('id', 'fwd-btn');
-    navItem2.appendChild(document.createTextNode(">"));
+    navItem2.setAttribute('id', 'cancel-btn');
+    navItem2.onclick = self.cancelButtonClicked;
+    navItem2.setAttribute('class', 'nav-item nav-right');
+    navItem2.appendChild(document.createTextNode("x"));
 
     var navItem3 = document.createElement("div");
-    navItem3.setAttribute('id', 'cancel-btn');
-    navItem3.onclick = self.cancelButtonClicked;
-    navItem3.appendChild(document.createTextNode("x"));
-
-    var navItem4 = document.createElement("div");
-    navItem4.setAttribute('id', 'add-btn');
-    navItem4.onclick = self.addButtonClicked;
-    navItem4.appendChild(document.createTextNode("+"));
+    navItem3.setAttribute('id', 'add-btn');
+    navItem3.onclick = self.addButtonClicked;
+    navItem3.setAttribute('class', 'nav-item nav-right');
+    navItem3.appendChild(document.createTextNode("+"));
 
     var navItems = [
       navItem1,
       navItem2,
       navItem3,
-      navItem4,
     ];
 
     for (i in navItems){
-      var css = i < 2 ? ' nav-left' : ' nav-right';
-      navItems[i].setAttribute('class', 'nav-item'+css);
       nav.appendChild(navItems[i]);
     }
     popup.appendChild(nav);
