@@ -3,6 +3,8 @@ function Popup(){
   var self = this;
   this.onAddCallback;
 
+  this.options = [];
+
   this.hide = function(){
     self.popupElement.className = "hidden";
     self.popupElement.setAttribute('style', 'top:0;left:0;');
@@ -10,7 +12,7 @@ function Popup(){
   this.show = function(x, y){
     self.popupElement.className = "";
     self.popupElement.setAttribute('style', 'top:'+y+'px;left:'+x+'px;');
-    self.objectTitleInput.focus();
+    self.steadingNameInput.focus();
   }
 
   this.selectObjectOptions = function(x, y, callback){
@@ -25,21 +27,22 @@ function Popup(){
   }
 
   this.addButtonClicked = function(e) {
-    var shape = {
-      color: self.nameInput.value,
-      height: parseInt(self.heightInput.value) || 20,
-      width: parseInt(self.widthInput.value) || 20,
+    //dummy image
+    var image = new Image();
+    image.src = 'images/rabbitredthumb.png';
+
+    var steading = {
+      name: self.steadingNameInput.value,
+      img: image,
     }
-    self.nameInput.value = "";
-    self.heightInput.value = "";
-    self.widthInput.value = "";
+    self.steadingNameInput.value = "";
 
     self.hide();
-    self.onAddCallback(shape);
+    self.onAddCallback(steading);
   }
   this.cancelButtonClicked = function(e) {
     self.hide();
-    self.objectTitleInput.value = "";
+    self.steadingNameInput.value = "";
   }
   this.optionItemClicked = function(e) {
     var allItems = document.getElementsByClassName("popup-item");
@@ -51,6 +54,18 @@ function Popup(){
   }
 
   function init() {
+    //populate array of options to present
+    var spriteSheet = new Image()
+    spriteSheet.src = 'images/cowboyspritestrip.png';
+    var spriteWidth = 64;
+    var numSprites = 10
+    for (var i = 0; i < numSprites; i ++){
+      self.options.push(new Steading({
+        img: spriteSheet,
+        offsetX: i*spriteWidth,
+      }));
+    }
+
     //construct and style the popup element
     var popup = document.createElement("div");
     popup.setAttribute('id', 'popup');
@@ -62,7 +77,7 @@ function Popup(){
     var navItem1 = document.createElement("input");
     navItem1.setAttribute('class', 'nav-title nav-left');
     navItem1.setAttribute('placeholder', 'Title (optional)');
-    self.objectTitleInput = navItem1;
+    self.steadingNameInput = navItem1;
 
     var navItem2 = document.createElement("div");
     navItem2.onclick = self.cancelButtonClicked;
@@ -91,62 +106,33 @@ function Popup(){
     var list = document.createElement("ul");
     list.setAttribute('class', 'popup-options');
 
-    var options = [];
+    var optionsDivs = [];
 
-    var optionItem;
-    var imgDiv;
-    var imgWidth = 64;
-    for (var i = 0; i < 10; i ++){
+    var img,imgDiv,optionItem;
+    for (var i = 0; i < self.options.length; i ++){
+
+      img = document.createElement('img');
+      img.src = self.options[i].img.src;
+      img.className = "popup-icon-image";
+      img.style.left = "-"+self.options[i].offsetX+"px";
+      img.style.top = self.options[i].offsetY+"px";
+      //TODO this math needs to be flipped/fixed elsewhere
 
       imgDiv = document.createElement("div");
-      imgDiv.className = "popup-icon";
-      imgDiv.style.backgroundPosition = i*imgWidth+"px 0px";
+      imgDiv.className = "popup-icon-frame";
+      imgDiv.style.height = "64px";
+      imgDiv.style.width = "64px";
+      imgDiv.appendChild(img);
 
       optionItem = document.createElement("li");
       optionItem.appendChild(imgDiv);
       optionItem.className = "popup-item";
       optionItem.onclick = self.optionItemClicked;
-      options.push(optionItem);
+      optionsDivs.push(optionItem);
     }
 
-    // var option1 = document.createElement("li");
-    // var input1 = document.createElement("input");
-    // input1.type = 'text';
-    // input1.name = 'height';
-    // input1.placeholder = 'default toober';
-    // // input1.setAttribute('type', 'text');
-    // // input1.setAttribute('name', 'height');
-    // // input1.setAttribute('placeholder', 'default 20');
-    // self.heightInput = input1;
-    // option1.appendChild(document.createTextNode("Height:"));
-    // option1.appendChild(input1);
-    //
-    // var option2 = document.createElement("li");
-    // var input2 = document.createElement("input");
-    // input2.setAttribute('type', 'text');
-    // input2.setAttribute('name', 'width');
-    // input2.setAttribute('placeholder', 'default 20');
-    // self.widthInput = input2;
-    // option2.appendChild(document.createTextNode("Width:"));
-    // option2.appendChild(input2);
-    //
-    // var option3 = document.createElement("li");
-    // var input3 = document.createElement("input");
-    // input3.setAttribute('type', 'text');
-    // input3.setAttribute('name', 'name');
-    // input3.setAttribute('placeholder', 'default gray');
-    // self.nameInput = input3;
-    // option3.appendChild(document.createTextNode("Color:"));
-    // option3.appendChild(input3);
-
-    // var options = [
-    //   option1,
-    //   option2,
-    //   option3
-    // ];
-
-    for (i in options) {
-      list.appendChild(options[i]);
+    for (i in optionsDivs) {
+      list.appendChild(optionsDivs[i]);
     }
     body.appendChild(list);
     popup.appendChild(body);

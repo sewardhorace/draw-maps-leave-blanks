@@ -1,20 +1,25 @@
-function MapObject(name, x, y, img) {
+function Steading(steading) {
+  //TODO pass an object to the constructor rather than all these params
 
-  this.name = name || "";
-  this.x = x || 0;
-  this.y = y || 0;
-  this.img = img;
-  
+  this.x = steading.x || 0;
+  this.y = steading.y || 0;
+  this.img = steading.img;
+  this.offsetX = steading.offsetX || 0;
+  this.offsetY = steading.offsetY || 0;
+
+  this.name = steading.name || "";
 }
 
 // Draws this shape to a given context
-MapObject.prototype.draw = function(ctx) {
-  ctx.drawImage(this.img,this.x, this.y);
+Steading.prototype.draw = function(ctx) {
+  ctx.drawImage(this.img, this.offsetX, this.offsetY, 64, 64, this.x, this.y, 64, 64);
   //TODO draw this.name (above or below??)
 }
 
 // Determine if a point is inside the shape's bounds, for purposes of click events
-MapObject.prototype.contains = function(mx, my) {
+Steading.prototype.contains = function(mx, my) {
+  //TODO modify this to accomodate images
+
   // All we have to do is make sure the Mouse X,Y fall in the area between
   // the shape's X and (X + Width) and its Y and (Y + Height)
   return  (this.x <= mx) && (this.x + this.w >= mx) &&
@@ -26,7 +31,3 @@ image.src = 'images/rabbitredthumb.png';
 
 var icons = new Image();
 icons.src = "images/cowboyspritestrip.png";
-
-// image.onload = function(){
-//   context.drawImage(base_image, 100, 100);
-// }

@@ -35,9 +35,7 @@ Shape.prototype.contains = function(mx, my) {
 }
 
 function CanvasState(canvas) {
-  // **** First some setup! ****
 
-  //my stuff
   this.popup = new Popup();
 
   this.canvas = canvas;
@@ -63,6 +61,7 @@ function CanvasState(canvas) {
 
   this.valid = false; // when set to false, the canvas will redraw everything
   this.shapes = [];  // the collection of things to be drawn
+  this.steadings = [];
   this.dragging = false; // Keep track of when we are dragging
   // the current selected object. In the future we could turn this into an array for multiple selection
   this.selection = null;
@@ -124,10 +123,17 @@ function CanvasState(canvas) {
     var mouse = self.getMouse(e);
 
     //popup menu with options for adding objects to canvas
-    self.popup.selectObjectOptions(mouse.x, mouse.y, function(shape) {
-      self.addShape(new Shape(mouse.x - 10, mouse.y - 10, shape.width, shape.height, shape.color));
+    self.popup.selectObjectOptions(mouse.x, mouse.y, function(steading) {
+      console.log(steading);
+      self.addShape(new Steading({
+        x: mouse.x - 10,
+        y: mouse.y - 10,
+        img: steading.img,
+        name: steading.name,
+      }));
     });
   }, true);
+
 
   // **** Options! ****
 
@@ -213,5 +219,13 @@ init();
 function init() {
   var s = new CanvasState(document.getElementById('exampleCanvas'));
 
+  var image = new Image();
+  image.src = 'images/cowboyspritestrip.png';
+  s.addShape(new Steading({
+    x: 60,
+    y: 140,
+    img: image,
+    name: "Title"
+  }));
   // s.addShape(new Shape(60,140,40,60, 'lightskyblue'));
 }
