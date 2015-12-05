@@ -1,38 +1,9 @@
-// By Simon Sarris
+//December 2015 - the following CanvasState code was modified from code by Simon Sarris
 // www.simonsarris.com
 // sarris@acm.org
-//
 // Last update December 2011
-//
 // Free to use and distribute at will
 // So long as you are nice to people, etc
-
-// Constructor for Shape objects to hold data for all drawn objects.
-// For now they will just be defined as rectangles.
-function Shape(x, y, w, h, fill) {
-  // This is a very simple and unsafe constructor. All we're doing is checking if the values exist.
-  // "x || 0" just means "if there is a value for x, use that. Otherwise use 0."
-  // But we aren't checking anything else! We could put "Lalala" for the value of x
-  this.x = x || 0;
-  this.y = y || 0;
-  this.w = w || 1;
-  this.h = h || 1;
-  this.fill = fill || '#AAAAAA';
-}
-
-// Draws this shape to a given context
-Shape.prototype.draw = function(ctx) {
-  ctx.fillStyle = this.fill;
-  ctx.fillRect(this.x, this.y, this.w, this.h);
-}
-
-// Determine if a point is inside the shape's bounds
-Shape.prototype.contains = function(mx, my) {
-  // All we have to do is make sure the Mouse X,Y fall in the area between
-  // the shape's X and (X + Width) and its Y and (Y + Height)
-  return  (this.x <= mx) && (this.x + this.w >= mx) &&
-          (this.y <= my) && (this.y + this.h >= my);
-}
 
 function CanvasState(canvas) {
 
@@ -42,6 +13,7 @@ function CanvasState(canvas) {
   this.width = canvas.width;
   this.height = canvas.height;
   this.ctx = canvas.getContext('2d');
+  this.ctx.font = "12px Arial";
   // This complicates things a little but but fixes mouse co-ordinate problems
   // when there's a border or padding. See getMouse for more detail
   var stylePaddingLeft, stylePaddingTop, styleBorderLeft, styleBorderTop;
@@ -60,8 +32,7 @@ function CanvasState(canvas) {
   // **** Keep track of state! ****
 
   this.valid = false; // when set to false, the canvas will redraw everything
-  this.shapes = [];  // the collection of things to be drawn
-  this.steadings = [];
+  this.steadings = []; // the collection of things to be drawn
   this.dragging = false; // Keep track of when we are dragging
   // the current selected object. In the future we could turn this into an array for multiple selection
   this.selection = null;
@@ -71,26 +42,20 @@ function CanvasState(canvas) {
 
 
   // **** Then events! ****
-
-  // This is an example of a closure!
-  // Right here "this" means the CanvasState. But we are making events on the Canvas itself,
-  // and when the events are fired on the canvas the variable "this" is going to mean the canvas!
-  // Since we still want to use this particular CanvasState in the events we have to save a reference to it.
-  // This is our reference!
   var self = this;
 
   //fixes a problem where double clicking causes text to get selected on the canvas
   canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
   // Up, down, and move are for dragging
   canvas.addEventListener('mousedown', function(e) {
+    //TODO clicking on a steading should move it to the end of the array
     var mouse = self.getMouse(e);
     var mx = mouse.x;
     var my = mouse.y;
-    var shapes = self.shapes;
-    var l = shapes.length;
-    for (var i = l-1; i >= 0; i--) {
-      if (shapes[i].contains(mx, my)) {
-        var mySel = shapes[i];
+    var steadings = self.steadings;
+    for (var i = steadings.length-1; i >= 0; i--) {
+      if (steadings[i].contains(mx, my)) {
+        var mySel = steadings[i];
         // Keep track of where in the object we clicked
         // so we can move it smoothly (see mousemove)
         self.dragoffx = mx - mySel.x;
@@ -124,28 +89,22 @@ function CanvasState(canvas) {
 
     //popup menu with options for adding objects to canvas
     self.popup.selectObjectOptions(mouse.x, mouse.y, function(steading) {
-      console.log(steading);
-      self.addShape(new Steading({
-        x: mouse.x - 10,
-        y: mouse.y - 10,
-        img: steading.img,
-        name: steading.name,
-        offsetX: steading.offsetX,
-      }));
+      steading.x = mouse.x - steading.width/2;
+      steading.y = mouse.y - steading.width/2;
+      self.addSteading(steading);
     });
   }, true);
 
 
   // **** Options! ****
-
-  this.selectionColor = 'blue';
+  this.selectionColor = 'rgb(152, 198, 233)';
   this.selectionWidth = 1;
   this.interval = 30;
   setInterval(function() { self.draw(); }, self.interval);
 }
 
-CanvasState.prototype.addShape = function(shape) {
-  this.shapes.push(shape);
+CanvasState.prototype.addSteading = function(steading) {
+  this.steadings.push(steading);
   this.valid = false;
 }
 
@@ -159,28 +118,28 @@ CanvasState.prototype.draw = function() {
   // if our state is invalid, redraw and validate!
   if (!this.valid) {
     var ctx = this.ctx;
-    var shapes = this.shapes;
+    var steadings = this.steadings;
     this.clear();
 
     // ** Add stuff you want drawn in the background all the time here **
 
-    // draw all shapes
-    var l = shapes.length;
+    // draw all steadings
+    var l = steadings.length;
     for (var i = 0; i < l; i++) {
-      var shape = shapes[i];
+      var steading = steadings[i];
       // We can skip the drawing of elements that have moved off the screen:
-      if (shape.x > this.width || shape.y > this.height ||
-          shape.x + shape.w < 0 || shape.y + shape.h < 0) continue;
-      shapes[i].draw(ctx);
+      if (steading.x > this.width || steading.y > this.height ||
+          steading.x + steading.width < 0 || steading.y + steading.width < 0) continue;
+      steadings[i].draw(ctx);
     }
 
     // draw selection
-    // right now this is just a stroke along the edge of the selected Shape
+    // right now this is just a stroke along the edge of the selected image
     if (this.selection != null) {
       ctx.strokeStyle = this.selectionColor;
       ctx.lineWidth = this.selectionWidth;
       var mySel = this.selection;
-      ctx.strokeRect(mySel.x,mySel.y,mySel.w,mySel.h);
+      ctx.strokeRect(mySel.x,mySel.y,mySel.width,mySel.width);
     }
 
     // ** Add stuff you want drawn on top all the time here **
@@ -188,7 +147,6 @@ CanvasState.prototype.draw = function() {
     this.valid = true;
   }
 }
-
 
 // Creates an object with x and y defined, set to the mouse position relative to the state's canvas
 // If you wanna be super-correct this can be tricky, we have to worry about padding and borders
@@ -211,7 +169,6 @@ CanvasState.prototype.getMouse = function(e) {
   mx = e.pageX - offsetX;
   my = e.pageY - offsetY;
 
-  // We return a simple javascript object (a hash) with x and y defined
   return {x: mx, y: my};
 }
 
@@ -222,11 +179,11 @@ function init() {
 
   var image = new Image();
   image.src = 'images/cowboyspritestrip.png';
-  s.addShape(new Steading({
+  s.addSteading(new Steading({
     x: 60,
     y: 140,
     img: image,
-    name: "Title"
+    name: "Title",
+    width: 64
   }));
-  // s.addShape(new Shape(60,140,40,60, 'lightskyblue'));
 }

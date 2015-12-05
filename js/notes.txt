@@ -24,7 +24,7 @@ double-click on the canvas
       subheading/content
 
 select an option
-->additional options/shape is added to the canvas
+->additional options/steading is added to the canvas
 
 
 double-click on an existing object

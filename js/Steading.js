@@ -1,5 +1,6 @@
 function Steading(steading) {
-  //TODO pass an object to the constructor rather than all these params
+  //TODO "width" will need to be more flexible to accomodate scaling/zooming
+  this.width = steading.width || 64;
 
   this.x = steading.x || 0;
   this.y = steading.y || 0;
@@ -10,24 +11,17 @@ function Steading(steading) {
   this.name = steading.name || "";
 }
 
-// Draws this shape to a given context
+// Draws this steading to a given context
 Steading.prototype.draw = function(ctx) {
   ctx.drawImage(this.img, this.offsetX, this.offsetY, 64, 64, this.x, this.y, 64, 64);
   //TODO draw this.name (above or below??)
+  ctx.fillText(this.name, this.x, this.y+this.width+14);
 }
 
-// Determine if a point is inside the shape's bounds, for purposes of click events
+// Determine if a point is inside the image bounds, for purposes of click events
 Steading.prototype.contains = function(mx, my) {
-  //TODO modify this to accomodate images
-
   // All we have to do is make sure the Mouse X,Y fall in the area between
-  // the shape's X and (X + Width) and its Y and (Y + Height)
-  return  (this.x <= mx) && (this.x + this.w >= mx) &&
-          (this.y <= my) && (this.y + this.h >= my);
+  // the image's X and (X + Width) and its Y and (Y + Height)
+  return  (this.x <= mx) && (this.x + this.width >= mx) &&
+          (this.y <= my) && (this.y + this.width >= my);
 }
-
-var image = new Image();
-image.src = 'images/rabbitredthumb.png';
-
-var icons = new Image();
-icons.src = "images/cowboyspritestrip.png";

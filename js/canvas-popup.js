@@ -7,6 +7,7 @@ function Popup(){
   this.options = [];
   this.selectedOptionIdx;
 
+  //TODO vs Popup.prototype.hide = function()? convention? answer: .prototype properties/methods are not visible (with console.log, etc.)
   this.hide = function(){
     self.popupElement.className = "hidden";
     self.popupElement.setAttribute('style', 'top:0;left:0;');
@@ -23,6 +24,7 @@ function Popup(){
   }
 
   this.keyPressed = function(e){
+    console.log(e);
     if(e.keyCode=='13'){
       self.addButtonClicked();
     }
@@ -30,11 +32,12 @@ function Popup(){
 
   this.addButtonClicked = function(e) {
     if (self.selectedOptionIdx > -1) {
-      var steading = {
+      var steading = new Steading({
         name: self.steadingNameInput.value,
         img: self.options[self.selectedOptionIdx].img,
         offsetX: self.options[self.selectedOptionIdx].offsetX,
-      }
+        width: self.options[self.selectedOptionIdx].width
+      });
 
       self.steadingNameInput.value = "";
       self.hide();
@@ -64,10 +67,11 @@ function Popup(){
     var spriteWidth = 64;
     var numSprites = 10;
     for (var i = 0; i < numSprites; i ++){
-      self.options.push(new Steading({
+      self.options.push({
         img: self.spriteSheet,
         offsetX: i*spriteWidth,
-      }));
+        width: spriteWidth,
+      });
     }
 
     //construct and style the popup element
@@ -120,7 +124,6 @@ function Popup(){
       img.className = "popup-icon-image";
       img.style.left = "-"+self.options[i].offsetX+"px";
       img.style.top = self.options[i].offsetY+"px";
-      //TODO this math needs to be flipped/fixed elsewhere
 
       imgDiv = document.createElement("div");
       imgDiv.className = "popup-icon-frame";
@@ -152,9 +155,3 @@ function Popup(){
   }
   init();
 }
-
-
-//prototype for each option?
-// function PopupOption () {
-//
-// }
