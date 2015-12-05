@@ -3,7 +3,9 @@ function Popup(){
   var self = this;
   this.onAddCallback;
 
+  this.spriteSheet;
   this.options = [];
+  this.selectedOptionIdx;
 
   this.hide = function(){
     self.popupElement.className = "hidden";
@@ -27,18 +29,17 @@ function Popup(){
   }
 
   this.addButtonClicked = function(e) {
-    //dummy image
-    var image = new Image();
-    image.src = 'images/rabbitredthumb.png';
+    if (self.selectedOptionIdx > -1) {
+      var steading = {
+        name: self.steadingNameInput.value,
+        img: self.options[self.selectedOptionIdx].img,
+        offsetX: self.options[self.selectedOptionIdx].offsetX,
+      }
 
-    var steading = {
-      name: self.steadingNameInput.value,
-      img: image,
+      self.steadingNameInput.value = "";
+      self.hide();
+      self.onAddCallback(steading);
     }
-    self.steadingNameInput.value = "";
-
-    self.hide();
-    self.onAddCallback(steading);
   }
   this.cancelButtonClicked = function(e) {
     self.hide();
@@ -47,21 +48,24 @@ function Popup(){
   this.optionItemClicked = function(e) {
     var allItems = document.getElementsByClassName("popup-item");
     for (var i = 0; i < allItems.length; i++) {
-      allItems[i].className = "popup-item";
+      if (allItems[i] === this) {
+        allItems[i].className = "popup-item selected";
+        self.selectedOptionIdx = i;
+      } else {
+        allItems[i].className = "popup-item";
+      }
     }
-    var option = this;
-    option.className = option.className + " selected";
   }
 
   function init() {
     //populate array of options to present
-    var spriteSheet = new Image()
-    spriteSheet.src = 'images/cowboyspritestrip.png';
+    self.spriteSheet = new Image();
+    self.spriteSheet.src = 'images/cowboyspritestrip.png';
     var spriteWidth = 64;
-    var numSprites = 10
+    var numSprites = 10;
     for (var i = 0; i < numSprites; i ++){
       self.options.push(new Steading({
-        img: spriteSheet,
+        img: self.spriteSheet,
         offsetX: i*spriteWidth,
       }));
     }

@@ -130,6 +130,7 @@ function CanvasState(canvas) {
         y: mouse.y - 10,
         img: steading.img,
         name: steading.name,
+        offsetX: steading.offsetX,
       }));
     });
   }, true);
